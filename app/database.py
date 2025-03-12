@@ -3,6 +3,9 @@ from motor.motor_asyncio import AsyncIOMotorClient #enables async operations
 
 from fastapi import FastAPI
 import os
+print("Connecting to MongoDB at:", os.getenv("MONGO_URL"))
+
+#this is for mongodb connection 
 
 MONGO_URL = os.getenv("MONGO_URL","mongodb://localhost:27017")
 

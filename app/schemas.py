@@ -26,4 +26,15 @@ class MovieResponse(MovieBase):
     id: str
     #it is used to give responses and during that id is also given 
     
+class UserCreate(BaseModel):
+    username : str
+    password : str
+    email : str
+    
+    
+class UserResponse(BaseModel):
+    username : str
+    role : str
+    
+    
     

@@ -1,3 +1,8 @@
+
+
+
+#this is for the mongodb models 
+
 from typing import Optional 
 #AGAIN FOR NONE
 
@@ -15,7 +20,7 @@ class Movie(BaseModel):
     release_year:str
     genre: str
     
-class Config:
-    json_encoders = {ObjectId: StopIteration}
+    class Config:
+        json_encoders = {ObjectId: StopIteration}
 
 
