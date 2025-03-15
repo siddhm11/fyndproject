@@ -6,7 +6,7 @@ from app.routes.auth import router as auth_router
 
 app = FastAPI(TITLE = "Movie API",version = "1.0")
 
-app.include_router(movies_router , prefix = "/movies",tags = ["Movies"])
+app.include_router(movies_router, prefix = "/movies",tags = ["Movies"])
 app.include_router(auth_router, prefix="/auth", tags = ["Authentication"])
 
 @app.get("/")

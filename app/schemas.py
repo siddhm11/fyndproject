@@ -1,4 +1,4 @@
-from pydantic import BaseModel # for data validation we use this 
+from pydantic import BaseModel,EmailStr,Field # for data validation we use this 
 #base model is its own model and we can create our own models by inheriting from it 
 
 
@@ -26,15 +26,29 @@ class MovieResponse(MovieBase):
     id: str
     #it is used to give responses and during that id is also given 
     
-class UserCreate(BaseModel):
-    username : str
+class MovieUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    release_year: Optional[int] = None
+    genre: Optional[str] = None
+    
+    
+class UserBase(BaseModel):
+    username:str
+    email: EmailStr
+    
+    
+class UserCreate(UserBase):
     password : str
-    email : str
     
     
 class UserResponse(BaseModel):
-    username : str
     role : str
+        
+class Token(BaseModel):
+    access_token : str
+    token_type: str
     
-    
-    
+class TokenData(BaseModel):
+    username: Optional[str] = None
+    role: Optional[str] = None
