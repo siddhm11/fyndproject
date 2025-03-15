@@ -1,0 +1,500 @@
+[
+    {
+      "99popularity": 83.0,
+      "director": "Victor Fleming",
+      "genre": [
+        "Adventure",
+        " Family",
+        " Fantasy",
+        " Musical"
+      ],
+      "imdb_score": 8.3,
+      "name": "The Wizard of Oz"
+    },
+    {
+      "99popularity": 88.0,
+      "director": "George Lucas",
+      "genre": [
+        "Action",
+        " Adventure",
+        " Fantasy",
+        " Sci-Fi"
+      ],
+      "imdb_score": 8.8,
+      "name": "Star Wars"
+    },
+    {
+      "99popularity": 66.0,
+      "director": "Giovanni Pastrone",
+      "genre": [
+        "Adventure",
+        " Drama",
+        " War"
+      ],
+      "imdb_score": 6.6,
+      "name": "Cabiria"
+    },
+    {
+      "99popularity": 87.0,
+      "director": "Alfred Hitchcock",
+      "genre": [
+        "Horror",
+        " Mystery",
+        " Thriller"
+      ],
+      "imdb_score": 8.7,
+      "name": "Psycho"
+    },
+    {
+      "99popularity": 80.0,
+      "director": "Merian C. Cooper",
+      "genre": [
+        "Adventure",
+        " Fantasy",
+        " Horror"
+      ],
+      "imdb_score": 8.0,
+      "name": "King Kong"
+    },
+    {
+      "99popularity": 84.0,
+      "director": "Fritz Lang",
+      "genre": [
+        "Adventure",
+        " Drama",
+        " Sci-Fi"
+      ],
+      "imdb_score": 8.4,
+      "name": "Metropolis"
+    },
+    {
+      "99popularity": 86.0,
+      "director": "Marc Daniels",
+      "genre": [
+        "Adventure",
+        " Sci-Fi"
+      ],
+      "imdb_score": 8.6,
+      "name": "Star Trek"
+    },
+    {
+      "99popularity": 88.0,
+      "director": "Michael Curtiz",
+      "genre": [
+        "Drama",
+        " Romance",
+        " War"
+      ],
+      "imdb_score": 8.8,
+      "name": "Casablanca"
+    },
+    {
+      "99popularity": 79.0,
+      "director": "William Cottrell",
+      "genre": [
+        "Animation",
+        " Family",
+        " Fantasy",
+        " Musical",
+        " Romance"
+      ],
+      "imdb_score": 7.9,
+      "name": "Snow White and the Seven Dwarfs"
+    },
+    {
+      "99popularity": 78.0,
+      "director": "Steven Spielberg",
+      "genre": [
+        "Drama",
+        " Sci-Fi"
+      ],
+      "imdb_score": 7.8,
+      "name": "Close Encounters of the Third Kind"
+    },
+    {
+      "99popularity": 88.0,
+      "director": "Akira Kurosawa",
+      "genre": [
+        "Adventure",
+        " Drama"
+      ],
+      "imdb_score": 8.8,
+      "name": "Shichinin no samurai"
+    },
+    {
+      "99popularity": 80.0,
+      "director": "James Whale",
+      "genre": [
+        "Horror",
+        " Sci-Fi"
+      ],
+      "imdb_score": 8.0,
+      "name": "Bride of Frankenstein"
+    },
+    {
+      "99popularity": 85.0,
+      "director": "John Huston",
+      "genre": [
+        "Adventure",
+        " Drama",
+        " Western",
+        " Action"
+      ],
+      "imdb_score": 8.5,
+      "name": "The Treasure of the Sierra Madre"
+    },
+    {
+      "99popularity": 60.0,
+      "director": "Phil Karlson",
+      "genre": [
+        "Drama",
+        " Crime",
+        " Film-Noir"
+      ],
+      "imdb_score": 6.0,
+      "name": "5 Against the House"
+    },
+    {
+      "99popularity": 74.0,
+      "director": "Leo McCarey",
+      "genre": [
+        "Drama",
+        " Family"
+      ],
+      "imdb_score": 7.4,
+      "name": "The Bells of St. Marys"
+    },
+    {
+      "99popularity": 77.0,
+      "director": "Steven Spielberg",
+      "genre": [
+        "Mystery",
+        " Thriller"
+      ],
+      "imdb_score": 7.7,
+      "name": "Duel"
+    },
+    {
+      "99popularity": 78.0,
+      "director": "Sergei M. Eisenstein",
+      "genre": [
+        "Drama"
+      ],
+      "imdb_score": 7.8,
+      "name": "Stachka"
+    },
+    {
+      "99popularity": 71.0,
+      "director": "Fred Zinnemann",
+      "genre": [
+        "Musical",
+        " Romance",
+        " Western"
+      ],
+      "imdb_score": 7.1,
+      "name": "Oklahoma!"
+    },
+    {
+      "99popularity": 74.0,
+      "director": "Maya Deren",
+      "genre": [
+        "Short"
+      ],
+      "imdb_score": 7.4,
+      "name": "At Land"
+    },
+    {
+      "99popularity": 79.0,
+      "director": "Steven Spielberg",
+      "genre": [
+        "Action",
+        " Adventure",
+        " Family",
+        " Sci-Fi"
+      ],
+      "imdb_score": 7.9,
+      "name": "Jurassic Park"
+    },
+    {
+      "99popularity": 79.0,
+      "director": "John Ford",
+      "genre": [
+        "Action",
+        " Drama",
+        " Romance",
+        " Western"
+      ],
+      "imdb_score": 7.9,
+      "name": "Stagecoach"
+    },
+    {
+      "99popularity": 86.0,
+      "director": "Stanley Kubrick",
+      "genre": [
+        "Crime",
+        " Drama",
+        " War"
+      ],
+      "imdb_score": 8.6,
+      "name": "Paths of Glory"
+    },
+    {
+      "99popularity": 77.0,
+      "director": "Jerry Paris",
+      "genre": [
+        "Comedy",
+        " Family",
+        " Music"
+      ],
+      "imdb_score": 7.7,
+      "name": "Happy Days"
+    },
+    {
+      "99popularity": 68.0,
+      "director": "John Badham",
+      "genre": [
+        "Drama",
+        " Music",
+        " Romance"
+      ],
+      "imdb_score": 6.8,
+      "name": "Saturday Night Fever"
+    },
+    {
+      "99popularity": 81.0,
+      "director": "George Cukor",
+      "genre": [
+        "Comedy",
+        " Romance"
+      ],
+      "imdb_score": 8.1,
+      "name": "The Philadelphia Story"
+    },
+    {
+      "99popularity": 82.0,
+      "director": "Federico Fellini",
+      "genre": [
+        "Drama",
+        " Fantasy"
+      ],
+      "imdb_score": 8.2,
+      "name": "8xe5"
+    },
+    {
+      "99popularity": 86.0,
+      "director": "Douglas Camfield",
+      "genre": [
+        "Adventure",
+        " Drama",
+        " Sci-Fi"
+      ],
+      "imdb_score": 8.6,
+      "name": "Doctor Who"
+    },
+    {
+      "99popularity": 86.0,
+      "director": "Fritz Lang",
+      "genre": [
+        "Crime",
+        " Thriller"
+      ],
+      "imdb_score": 8.6,
+      "name": "M"
+    },
+    {
+      "99popularity": 74.0,
+      "director": "John Huston",
+      "genre": [
+        "Adventure",
+        " Drama"
+      ],
+      "imdb_score": 7.4,
+      "name": "Moby Dick"
+    },
+    {
+      "99popularity": 74.0,
+      "director": "Brian De Palma",
+      "genre": [
+        "Horror",
+        " Thriller"
+      ],
+      "imdb_score": 7.4,
+      "name": "Carrie"
+    },
+    {
+      "99popularity": 79.0,
+      "director": "Nicholas Ray",
+      "genre": [
+        "Drama",
+        " Romance"
+      ],
+      "imdb_score": 7.9,
+      "name": "Rebel Without a Cause"
+    },
+    {
+      "99popularity": 73.0,
+      "director": "Richard Donner",
+      "genre": [
+        "Action",
+        " Adventure",
+        " Family",
+        " Sci-Fi"
+      ],
+      "imdb_score": 7.3,
+      "name": "Superman"
+    },
+    {
+      "99popularity": 88.0,
+      "director": "Peter Harris",
+      "genre": [
+        "Comedy",
+        " Family",
+        " Music"
+      ],
+      "imdb_score": 8.8,
+      "name": "The Muppet Show"
+    },
+    {
+      "99popularity": 80.0,
+      "director": "Don Siegel",
+      "genre": [
+        "Horror",
+        " Sci-Fi",
+        " Thriller"
+      ],
+      "imdb_score": 8.0,
+      "name": "Invasion of the Body Snatchers"
+    },
+    {
+      "99popularity": 78.0,
+      "director": "Alain Resnais",
+      "genre": [
+        "Drama",
+        " Mystery",
+        " Romance"
+      ],
+      "imdb_score": 7.8,
+      "name": "Lanncca9e derniccacre ccca Marienbad"
+    },
+    {
+      "99popularity": 68.0,
+      "director": "Walter Grauman",
+      "genre": [
+        "Drama",
+        " Thriller"
+      ],
+      "imdb_score": 6.8,
+      "name": "Lady in a Cage"
+    },
+    {
+      "99popularity": 76.0,
+      "director": "Sam Raimi",
+      "genre": [
+        "Horror"
+      ],
+      "imdb_score": 7.6,
+      "name": "The Evil Dead"
+    },
+    {
+      "99popularity": 83.0,
+      "director": "Bobby Quinn",
+      "genre": [
+        "Comedy",
+        " Music",
+        " Talk-Show"
+      ],
+      "imdb_score": 8.3,
+      "name": "The Tonight Show Starring Johnny Carson"
+    },
+    {
+      "99popularity": 66.0,
+      "director": "Tony Scott",
+      "genre": [
+        "Action",
+        " Drama",
+        " Romance"
+      ],
+      "imdb_score": 6.6,
+      "name": "Top Gun"
+    },
+    {
+      "99popularity": 69.0,
+      "director": "Lewis Gilbert",
+      "genre": [
+        "Action",
+        " Adventure",
+        " Sci-Fi",
+        " Thriller"
+      ],
+      "imdb_score": 6.9,
+      "name": "You Only Live Twice"
+    },
+    {
+      "99popularity": 75.0,
+      "director": "Terence Young",
+      "genre": [
+        "Action",
+        " Adventure",
+        " Romance",
+        " Thriller"
+      ],
+      "imdb_score": 7.5,
+      "name": "From Russia with Love"
+    },
+    {
+      "99popularity": 81.0,
+      "director": "Hollingsworth Morse",
+      "genre": [
+        "Adventure",
+        " Western",
+        " Family"
+      ],
+      "imdb_score": 8.1,
+      "name": "The Lone Ranger"
+    },
+    {
+      "99popularity": 88.0,
+      "director": "Martin Scorsese",
+      "genre": [
+        "Crime",
+        " Drama",
+        " Thriller"
+      ],
+      "imdb_score": 8.8,
+      "name": "Goodfellas"
+    },
+    {
+      "99popularity": 62.0,
+      "director": "Michael Curtiz",
+      "genre": [
+        "Drama",
+        " History"
+      ],
+      "imdb_score": 6.2,
+      "name": "The Egyptian"
+    },
+    {
+      "99popularity": 76.0,
+      "director": "Michael OHerlihy",
+      "genre": [
+        "Crime",
+        " Drama",
+        " Mystery"
+      ],
+      "imdb_score": 7.6,
+      "name": "Hawaii Five-O"
+    },
+    {
+      "99popularity": 66.0,
+      "director": "Dennis Donnelly",
+      "genre": [
+        "Action",
+        " Adventure",
+        " Crime",
+        " Drama",
+        " Mystery"
+      ],
+      "imdb_score": 6.6,
+      "name": "Charlies Angels"
+    }
+  ]
