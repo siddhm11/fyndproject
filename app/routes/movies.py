@@ -29,23 +29,54 @@ async def get_movies(
 async def search_movies(
     title: Optional[str] = None,
     genre: Optional[str] = None,
-    year: Optional[int] = None,
+    director: Optional[str] = None,
+    year_from: Optional[int] = None,
+    year_to: Optional[int] = None,
+    min_score: Optional[float] = None,
+    sort_by: Optional[str] = None,
     db = Depends(get_database),
-    current_user = Depends(get_current_user)  # Both users and admins can search
+    current_user = Depends(get_current_user)
 ):
     query = {}
     
     if title:
-        query["title"] = {"$regex": title, "$options": "i"}  # Case-insensitive search
+        query["title"] = {"$regex": title, "$options": "i"}
         
     if genre:
         query["genre"] = {"$regex": genre, "$options": "i"}
         
-    if year:
-        query["release_year"] = year
+    if director:
+        query["director"] = {"$regex": director, "$options": "i"}
         
-    movies = await db.movies.find(query).to_list(length=100)
+    if year_from or year_to:
+        query["release_year"] = {}
+        if year_from:
+            query["release_year"]["$gte"] = year_from
+        if year_to:
+            query["release_year"]["$lte"] = year_to
+            
+    if min_score:
+        query["imdb_score"] = {"$gte": min_score}
+    
+    # Sorting
+    sort_options = None
+    if sort_by:
+        if sort_by == "year_asc":
+            sort_options = [("release_year", 1)]
+        elif sort_by == "year_desc":
+            sort_options = [("release_year", -1)]
+        elif sort_by == "title_asc":
+            sort_options = [("title", 1)]
+        elif sort_by == "score_desc":
+            sort_options = [("imdb_score", -1)]
+    
+    cursor = db.movies.find(query)
+    if sort_options:
+        cursor = cursor.sort(sort_options)
+        
+    movies = await cursor.to_list(length=100)
     return [{**movie, "id": str(movie["_id"])} for movie in movies]
+
 
 @router.get("/{movie_id}", response_model=MovieResponse)
 async def get_movie(
