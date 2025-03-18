@@ -1,5 +1,5 @@
 # main.py
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status ,Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -14,8 +14,9 @@ load_dotenv()  # Load .env file
 
 from fastapi.middleware.cors import CORSMiddleware  # Add this import
 
-app = FastAPI()
-
+app = FastAPI(root_path="/api")
+from mangum import Adapter
+handler = Adapter(app)
 # Add CORS middleware BEFORE routes
 app.add_middleware(
     CORSMiddleware,
@@ -120,6 +121,17 @@ async def get_movies(search: Optional[str] = None):
     else:
         movies = await db.movies.find().to_list(100)
     return [{"id": str(m["_id"]), **m} for m in movies]
+
+
+@app.put("/movies/{movie_id}", response_model=MovieInDB)
+async def update_movie(movie_id: str, movie: Movie, admin: User = Depends(get_admin_user)):
+    movie_dict = movie.dict()
+    await db.movies.update_one({"_id": ObjectId(movie_id)}, {"$set": movie_dict})
+    updated_movie = await db.movies.find_one({"_id": ObjectId(movie_id)})
+    if not updated_movie:
+        raise HTTPException(status_code=404, detail="Movie not found")
+    return {"id": str(updated_movie["_id"]), **updated_movie}
+
 
 @app.get("/movies/{movie_id}", response_model=MovieInDB)
 async def get_movie(movie_id: str):

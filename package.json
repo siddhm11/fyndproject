@@ -1,0 +1,10 @@
+{
+    "name": "movie-database",
+    "version": "1.0.0",
+    "scripts": {
+        "build": "mkdir -p public && cp -r frontend/* public/"
+    },
+    "dependencies": {
+        "movie-database": "file:"
+    }
+}

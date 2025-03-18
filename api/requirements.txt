@@ -1,10 +1,11 @@
 fastapi
-uvicorn
 motor
-pydantic
+pymongo
+python-multipart
+uvicorn
 python-dotenv
-passlib[bcrypt]
-pyjwt
+passlib
+bcrypt==4.0.1
 python-jose[cryptography]
 email-validator
-pydantic[email]
+mangum

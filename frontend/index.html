@@ -81,12 +81,12 @@
             padding: 4px 8px;
             font-size: 12px;
         }
-        #add-movie-form {
+        #add-movie-form, #edit-movie-form {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-        #add-movie-form .full-width {
+        #add-movie-form .full-width, #edit-movie-form .full-width {
             grid-column: span 2;
         }
         .form-title {
@@ -236,7 +236,7 @@
 
     <script>
         // Configuration
-        const API_URL = 'http://localhost:8000';
+        const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://yourapidomain.vercel.app';
         let token = localStorage.getItem('token');
         let isAdmin = localStorage.getItem('isAdmin') === 'true';
         
@@ -253,7 +253,6 @@
         const addMovieForm = document.getElementById('add-movie-form');
         const editModal = document.getElementById('edit-modal');
         const editMovieForm = document.getElementById('edit-movie-form');
-        const cancelBtns = document.querySelectorAll('.cancel-btn');
         
         // Check if user is logged in
         function checkAuth() {
@@ -266,9 +265,11 @@
                     addMovieBtn.classList.remove('hidden');
                     welcomeMessage.textContent = `Welcome, ${localStorage.getItem('username')}!`;
                     welcomeMessage.innerHTML += '<span class="admin-badge">Admin</span>';
+                    console.log("Admin features enabled");
                 } else {
                     addMovieBtn.classList.add('hidden');
                     welcomeMessage.textContent = `Welcome, ${localStorage.getItem('username')}!`;
+                    console.log("Regular user mode");
                 }
                 
                 fetchMovies();
@@ -346,8 +347,8 @@
             addModal.classList.remove('hidden');
         });
         
-        // Cancel buttons for modals
-        cancelBtns.forEach(btn => {
+        // Close modals when clicking cancel
+        document.querySelectorAll('.cancel-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 addModal.classList.add('hidden');
                 editModal.classList.add('hidden');
@@ -363,9 +364,9 @@
                 }
                 
                 const response = await fetch(url, {
-                    headers: {
+                    headers: token ? {
                         'Authorization': `Bearer ${token}`
-                    }
+                    } : {}
                 });
                 
                 if (response.ok) {
@@ -397,8 +398,7 @@
                 return;
             }
             
-            // Debug log
-            console.log("Current admin status:", isAdmin);
+            console.log("Display movies - isAdmin:", isAdmin);
             
             movies.forEach(movie => {
                 const movieCard = document.createElement('div');
@@ -543,8 +543,8 @@
             };
         }
         
-        // Initial check - with debug
-        console.log("Initial state - token:", token, "isAdmin:", isAdmin);
+        // Initial check
+        console.log("Initial state - token:", token ? "exists" : "none", "isAdmin:", isAdmin);
         checkAuth();
     </script>
 </body>
