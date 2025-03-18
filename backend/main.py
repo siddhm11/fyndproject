@@ -101,6 +101,10 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
+@app.get("/users/me", response_model=User)
+async def get_current_user_info(current_user: User = Depends(get_current_user)):
+    return current_user
+
 
 @app.post("/movies/", response_model=MovieInDB)
 async def create_movie(movie: Movie, admin: User = Depends(get_admin_user)):

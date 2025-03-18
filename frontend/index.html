@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Database</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .hidden {
+            display: none !important;
+        }
+        #login-form {
+            margin-bottom: 20px;
+        }
+        .movie-card {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .movie-title {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .movie-info {
+            color: #555;
+            margin: 5px 0;
+        }
+        button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        input, select {
+            padding: 8px;
+            margin-right: 5px;
+            margin-bottom: 10px;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        #search-bar {
+            margin: 20px 0;
+            width: 100%;
+        }
+        #logout-btn {
+            background-color: #f44336;
+        }
+        .admin-badge {
+            background-color: #ff9800;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+        .admin-controls {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .edit-btn {
+            background-color: #2196F3;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+        #add-movie-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        #add-movie-form .full-width {
+            grid-column: span 2;
+        }
+        .form-title {
+            margin-top: 0;
+        }
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+            width: 80%;
+            max-width: 600px;
+        }
+        #add-movie-btn {
+            background-color: #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Movie Database</h1>
+    
+    <div id="login-section">
+        <h2>Login</h2>
+        <form id="login-form">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    
+    <div id="movie-section" class="hidden">
+        <div class="header-controls">
+            <div>
+                <span id="welcome-message"></span>
+            </div>
+            <div>
+                <button id="add-movie-btn" class="hidden">Add Movie</button>
+                <button id="logout-btn">Logout</button>
+            </div>
+        </div>
+        
+        <input type="text" id="search-bar" placeholder="Search movies...">
+        
+        <h2>Movies</h2>
+        <div id="movies-container"></div>
+        
+        <!-- Add Movie Modal -->
+        <div id="add-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>Add New Movie</h3>
+                <form id="add-movie-form">
+                    <div>
+                        <label for="title">Title:</label>
+                        <input type="text" id="title" required>
+                    </div>
+                    <div>
+                        <label for="year">Year:</label>
+                        <input type="number" id="year" min="1900" max="2099" required>
+                    </div>
+                    <div>
+                        <label for="genre">Genre:</label>
+                        <input type="text" id="genre" placeholder="Action, Drama, Comedy" required>
+                    </div>
+                    <div>
+                        <label for="director">Director:</label>
+                        <input type="text" id="director" required>
+                    </div>
+                    <div>
+                        <label for="cast">Cast:</label>
+                        <input type="text" id="cast" placeholder="Names separated by commas">
+                    </div>
+                    <div>
+                        <label for="rating">Rating:</label>
+                        <input type="number" id="rating" min="0" max="10" step="0.1" required>
+                    </div>
+                    <div class="full-width">
+                        <label for="description">Description:</label>
+                        <textarea id="description" rows="3"></textarea>
+                    </div>
+                    <div class="full-width">
+                        <button type="button" class="cancel-btn" style="background-color: #ccc; color: black;">Cancel</button>
+                        <button type="submit">Add Movie</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Edit Movie Modal -->
+        <div id="edit-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>Edit Movie</h3>
+                <form id="edit-movie-form">
+                    <input type="hidden" id="edit-id">
+                    <div>
+                        <label for="edit-title">Title:</label>
+                        <input type="text" id="edit-title" required>
+                    </div>
+                    <div>
+                        <label for="edit-year">Year:</label>
+                        <input type="number" id="edit-year" min="1900" max="2099" required>
+                    </div>
+                    <div>
+                        <label for="edit-genre">Genre:</label>
+                        <input type="text" id="edit-genre" required>
+                    </div>
+                    <div>
+                        <label for="edit-director">Director:</label>
+                        <input type="text" id="edit-director" required>
+                    </div>
+                    <div>
+                        <label for="edit-cast">Cast:</label>
+                        <input type="text" id="edit-cast">
+                    </div>
+                    <div>
+                        <label for="edit-rating">Rating:</label>
+                        <input type="number" id="edit-rating" min="0" max="10" step="0.1" required>
+                    </div>
+                    <div class="full-width">
+                        <label for="edit-description">Description:</label>
+                        <textarea id="edit-description" rows="3"></textarea>
+                    </div>
+                    <div class="full-width">
+                        <button type="button" class="cancel-btn" style="background-color: #ccc; color: black;">Cancel</button>
+                        <button type="submit" style="background-color: #2196F3;">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_URL = 'http://localhost:8000';
+        let token = localStorage.getItem('token');
+        let isAdmin = localStorage.getItem('isAdmin') === 'true';
+        
+        // DOM Elements
+        const loginSection = document.getElementById('login-section');
+        const movieSection = document.getElementById('movie-section');
+        const loginForm = document.getElementById('login-form');
+        const moviesContainer = document.getElementById('movies-container');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const logoutBtn = document.getElementById('logout-btn');
+        const searchBar = document.getElementById('search-bar');
+        const addMovieBtn = document.getElementById('add-movie-btn');
+        const addModal = document.getElementById('add-modal');
+        const addMovieForm = document.getElementById('add-movie-form');
+        const editModal = document.getElementById('edit-modal');
+        const editMovieForm = document.getElementById('edit-movie-form');
+        const cancelBtns = document.querySelectorAll('.cancel-btn');
+        
+        // Check if user is logged in
+        function checkAuth() {
+            if (token) {
+                loginSection.classList.add('hidden');
+                movieSection.classList.remove('hidden');
+                
+                // Check if user is admin
+                if (isAdmin) {
+                    addMovieBtn.classList.remove('hidden');
+                    welcomeMessage.textContent = `Welcome, ${localStorage.getItem('username')}!`;
+                    welcomeMessage.innerHTML += '<span class="admin-badge">Admin</span>';
+                } else {
+                    addMovieBtn.classList.add('hidden');
+                    welcomeMessage.textContent = `Welcome, ${localStorage.getItem('username')}!`;
+                }
+                
+                fetchMovies();
+            } else {
+                loginSection.classList.remove('hidden');
+                movieSection.classList.add('hidden');
+            }
+        }
+        
+        // Login form submission
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/token`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    token = data.access_token;
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('username', username);
+                    
+                    // Fetch user info to check if admin
+                    try {
+                        const userResponse = await fetch(`${API_URL}/users/me`, {
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+                        
+                        if (userResponse.ok) {
+                            const userData = await userResponse.json();
+                            isAdmin = userData.role === 'admin';
+                            localStorage.setItem('isAdmin', isAdmin.toString());
+                            console.log("User is admin:", isAdmin);
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user info:', error);
+                        // If we can't determine admin status, assume regular user
+                        isAdmin = false;
+                        localStorage.setItem('isAdmin', 'false');
+                    }
+                    
+                    checkAuth();
+                } else {
+                    alert('Login failed: ' + (data.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error connecting to the server');
+                console.error(error);
+            }
+        });
+        
+        // Logout functionality
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            localStorage.removeItem('isAdmin');
+            token = null;
+            isAdmin = false;
+            checkAuth();
+        });
+        
+        // Add Movie Button Click
+        addMovieBtn.addEventListener('click', () => {
+            addModal.classList.remove('hidden');
+        });
+        
+        // Cancel buttons for modals
+        cancelBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                addModal.classList.add('hidden');
+                editModal.classList.add('hidden');
+            });
+        });
+        
+        // Fetch movies from API
+        async function fetchMovies(searchQuery = '') {
+            try {
+                let url = `${API_URL}/movies/`;
+                if (searchQuery) {
+                    url += `?search=${encodeURIComponent(searchQuery)}`;
+                }
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const movies = await response.json();
+                    displayMovies(movies);
+                } else if (response.status === 401) {
+                    // Token expired or invalid
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('isAdmin');
+                    token = null;
+                    isAdmin = false;
+                    checkAuth();
+                    alert('Session expired. Please login again.');
+                } else {
+                    alert('Error fetching movies');
+                }
+            } catch (error) {
+                console.error('Error fetching movies:', error);
+            }
+        }
+        
+        // Display movies in the UI
+        function displayMovies(movies) {
+            moviesContainer.innerHTML = '';
+            
+            if (movies.length === 0) {
+                moviesContainer.innerHTML = '<p>No movies found.</p>';
+                return;
+            }
+            
+            // Debug log
+            console.log("Current admin status:", isAdmin);
+            
+            movies.forEach(movie => {
+                const movieCard = document.createElement('div');
+                movieCard.className = 'movie-card';
+                
+                let castText = '';
+                if (movie.cast && movie.cast.length > 0) {
+                    castText = `<div class="movie-info">Cast: ${movie.cast.join(', ')}</div>`;
+                }
+                
+                let descriptionText = '';
+                if (movie.description) {
+                    descriptionText = `<div class="movie-info">${movie.description}</div>`;
+                }
+                
+                movieCard.innerHTML = `
+                    <div class="movie-title">${movie.title} (${movie.year})</div>
+                    <div class="movie-info">Director: ${movie.director}</div>
+                    <div class="movie-info">Genre: ${movie.genre}</div>
+                    <div class="movie-info">Rating: ${movie.rating} / 10</div>
+                    ${castText}
+                    ${descriptionText}
+                `;
+                
+                // Add edit button for admins
+                if (isAdmin) {
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'edit-btn';
+                    editBtn.textContent = 'Edit';
+                    editBtn.addEventListener('click', () => openEditModal(movie));
+                    movieCard.appendChild(editBtn);
+                }
+                
+                moviesContainer.appendChild(movieCard);
+            });
+        }
+        
+        // Open Edit Modal
+        function openEditModal(movie) {
+            document.getElementById('edit-id').value = movie.id;
+            document.getElementById('edit-title').value = movie.title;
+            document.getElementById('edit-year').value = movie.year;
+            document.getElementById('edit-genre').value = movie.genre;
+            document.getElementById('edit-director').value = movie.director;
+            document.getElementById('edit-cast').value = movie.cast ? movie.cast.join(', ') : '';
+            document.getElementById('edit-rating').value = movie.rating;
+            document.getElementById('edit-description').value = movie.description || '';
+            
+            editModal.classList.remove('hidden');
+        }
+        
+        // Add Movie Form Submission
+        addMovieForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const movieData = {
+                title: document.getElementById('title').value,
+                year: parseInt(document.getElementById('year').value),
+                genre: document.getElementById('genre').value,
+                director: document.getElementById('director').value,
+                cast: document.getElementById('cast').value.split(',').map(name => name.trim()).filter(name => name),
+                rating: parseFloat(document.getElementById('rating').value),
+                description: document.getElementById('description').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/movies/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(movieData)
+                });
+                
+                if (response.ok) {
+                    alert('Movie added successfully!');
+                    addMovieForm.reset();
+                    addModal.classList.add('hidden');
+                    fetchMovies();
+                } else {
+                    const errorData = await response.json();
+                    alert('Error adding movie: ' + (errorData.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error connecting to the server');
+                console.error(error);
+            }
+        });
+        
+        // Edit Movie Form Submission
+        editMovieForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const movieId = document.getElementById('edit-id').value;
+            const movieData = {
+                title: document.getElementById('edit-title').value,
+                year: parseInt(document.getElementById('edit-year').value),
+                genre: document.getElementById('edit-genre').value,
+                director: document.getElementById('edit-director').value,
+                cast: document.getElementById('edit-cast').value.split(',').map(name => name.trim()).filter(name => name),
+                rating: parseFloat(document.getElementById('edit-rating').value),
+                description: document.getElementById('edit-description').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/movies/${movieId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(movieData)
+                });
+                
+                if (response.ok) {
+                    alert('Movie updated successfully!');
+                    editModal.classList.add('hidden');
+                    fetchMovies();
+                } else {
+                    const errorData = await response.json();
+                    alert('Error updating movie: ' + (errorData.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error connecting to the server');
+                console.error(error);
+            }
+        });
+        
+        // Search functionality
+        searchBar.addEventListener('input', debounce((e) => {
+            fetchMovies(e.target.value);
+        }, 500));
+        
+        // Debounce function to limit API calls
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
+        
+        // Initial check - with debug
+        console.log("Initial state - token:", token, "isAdmin:", isAdmin);
+        checkAuth();
+    </script>
+</body>
+</html>
