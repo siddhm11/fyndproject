@@ -96,4 +96,5 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 # (Get users, create/get movies, etc.)
 
 # Create the serverless handler
-handler = Adapter(app)
+from mangum import Mangum
+handler = Mangum(app)

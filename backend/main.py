@@ -15,8 +15,9 @@ load_dotenv()  # Load .env file
 from fastapi.middleware.cors import CORSMiddleware  # Add this import
 
 app = FastAPI(root_path="/api")
-from mangum import Adapter
-handler = Adapter(app)
+from mangum import Mangum
+handler = Mangum(app)
+
 # Add CORS middleware BEFORE routes
 app.add_middleware(
     CORSMiddleware,
