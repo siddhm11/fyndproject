@@ -1,0 +1,10 @@
+fastapi
+motor
+pymongo
+python-multipart
+uvicorn[standard]
+python-dotenv
+passlib
+bcrypt==4.0.1
+python-jose[cryptography]
+email-validator
