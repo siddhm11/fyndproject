@@ -69,13 +69,18 @@ async def create_indexes():
 # Auth functions
 # Replace the existing get_current_user function with:
 async def get_current_user(token: str = Depends(oauth2_scheme)):
-    user = await db.users.find_one({"token": token})
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("sub")
+        if username is None:
+            raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+    
+    user = await db.users.find_one({"username": username})
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication credentials",
-        )
-    # Convert MongoDB document to Pydantic model
+        raise HTTPException(status_code=401, detail="User not found")
+    
     return UserInDB(**user)
 
 async def get_admin_user(current_user: User = Depends(get_current_user)):
