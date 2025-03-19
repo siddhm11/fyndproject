@@ -238,7 +238,7 @@
         // Configuration
          const API_URL = window.location.hostname === 'localhost' 
             ? 'http://localhost:8000' 
-            : 'https://' + window.location.hostname + '/api';;
+            : '';  // Empty string for relative URL
         let token = localStorage.getItem('token');
         let isAdmin = localStorage.getItem('isAdmin') === 'true';
         
