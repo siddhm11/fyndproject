@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from mangum import Adapter
-
+from jose import jwt, JWTError
 # Create a new FastAPI app
 app = FastAPI()
 
