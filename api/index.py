@@ -239,3 +239,6 @@ async def add_error_handling(request: Request, call_next):
         return HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 # Create the serverless handler
+# Create the serverless handler
+from mangum import Mangum
+handler = Mangum(app)
