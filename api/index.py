@@ -238,6 +238,8 @@ async def add_error_handling(request: Request, call_next):
         print(traceback.format_exc())
         return HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
+# Put this at the end of api/index.py
 from mangum import Mangum
 
-handler = Mangum(app, lifespan="off") 
+# Fix Mangum handler configuration
+handler = Mangum(app)  # Remove the lifespan="off" parameter
