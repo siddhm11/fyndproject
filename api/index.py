@@ -1,5 +1,5 @@
 # Use the cleaned up and fixed main.py from the backend folder
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from mangum import Mangum
@@ -12,6 +12,7 @@ from pymongo import TEXT
 from bson import ObjectId
 from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
+import traceback
 
 # Security setup
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -34,10 +35,21 @@ app.add_middleware(
 
 # MongoDB setup - ensure consistent connection string format
 MONGODB_URL = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
+# Print the connection string for debugging (remove in production)
+print(f"MongoDB URL: {MONGODB_URL}")
+
 # Ensure we have the database name in the connection string
 DB_NAME = "movie_db"
-client = AsyncIOMotorClient(MONGODB_URL)
-db = client[DB_NAME]
+try:
+    client = AsyncIOMotorClient(MONGODB_URL)
+    db = client[DB_NAME]
+    print("MongoDB connection successful")
+except Exception as e:
+    print(f"MongoDB connection error: {str(e)}")
+    print(traceback.format_exc())
+    # Create a dummy DB object to prevent the app from crashing
+    client = None
+    db = None
 
 # Models
 class User(BaseModel):
@@ -64,7 +76,13 @@ class MovieInDB(Movie):
 # Create indexes
 @app.on_event("startup")
 async def create_indexes():
-    await db.movies.create_index([("title", TEXT), ("genre", TEXT), ("director", TEXT)])
+    try:
+        if db is not None:
+            await db.movies.create_index([("title", TEXT), ("genre", TEXT), ("director", TEXT)])
+            print("Indexes created successfully")
+    except Exception as e:
+        print(f"Error creating indexes: {str(e)}")
+        print(traceback.format_exc())
 
 # Authentication functions
 def verify_password(plain_password, hashed_password):
@@ -102,18 +120,26 @@ async def get_admin_user(current_user: User = Depends(get_current_user)):
 # Routes
 @app.post("/token")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user_doc = await db.users.find_one({"username": form_data.username})
-    if not user_doc:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-    
-    if not verify_password(form_data.password, user_doc["hashed_password"]):
-        raise HTTPException(status_code=400, detail="Incorrect password")
-    
-    access_token = create_access_token(
-        data={"sub": user_doc["username"]}
-    )
-    
-    return {"access_token": access_token, "token_type": "bearer"}
+    try:
+        print(f"Login attempt for user: {form_data.username}")
+        user_doc = await db.users.find_one({"username": form_data.username})
+        if not user_doc:
+            print(f"User not found: {form_data.username}")
+            raise HTTPException(status_code=400, detail="Incorrect username or password")
+        
+        if not verify_password(form_data.password, user_doc["hashed_password"]):
+            print(f"Invalid password for user: {form_data.username}")
+            raise HTTPException(status_code=400, detail="Incorrect password")
+        
+        access_token = create_access_token(
+            data={"sub": user_doc["username"]}
+        )
+        print(f"Login successful for user: {form_data.username}")
+        return {"access_token": access_token, "token_type": "bearer"}
+    except Exception as e:
+        print(f"Login error: {str(e)}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.get("/users/me", response_model=User)
 async def get_current_user_info(current_user: User = Depends(get_current_user)):
@@ -127,20 +153,25 @@ async def create_movie(movie: Movie, admin: User = Depends(get_admin_user)):
 
 @app.get("/movies/", response_model=List[MovieInDB])
 async def get_movies(search: Optional[str] = None):
-    if search:
-        query = {"$text": {"$search": search}}
-        movies = await db.movies.find(query).to_list(100)
-    else:
-        movies = await db.movies.find().to_list(100)
-    
-    # Fix the ID handling in the return
-    movie_list = []
-    for m in movies:
-        movie_dict = {k: v for k, v in m.items() if k != "_id"}
-        movie_dict["id"] = str(m["_id"])
-        movie_list.append(movie_dict)
-    
-    return movie_list
+    try:
+        if search:
+            query = {"$text": {"$search": search}}
+            movies = await db.movies.find(query).to_list(100)
+        else:
+            movies = await db.movies.find().to_list(100)
+        
+        # Fix the ID handling in the return
+        movie_list = []
+        for m in movies:
+            movie_dict = {k: v for k, v in m.items() if k != "_id"}
+            movie_dict["id"] = str(m["_id"])
+            movie_list.append(movie_dict)
+        
+        return movie_list
+    except Exception as e:
+        print(f"Error fetching movies: {str(e)}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.put("/movies/{movie_id}", response_model=MovieInDB)
 async def update_movie(movie_id: str, movie: Movie, admin: User = Depends(get_admin_user)):
@@ -196,6 +227,17 @@ async def register_user(
 @app.get("/")
 async def root():
     return {"message": "API is running! Connect to /movies/ to see data."}
+
+# Error handling middleware
+@app.middleware("http")
+async def add_error_handling(request: Request, call_next):
+    try:
+        response = await call_next(request)
+        return response
+    except Exception as e:
+        print(f"Unhandled exception: {str(e)}")
+        print(traceback.format_exc())
+        return HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 # Create the serverless handler
 handler = Mangum(app)
