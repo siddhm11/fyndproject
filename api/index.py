@@ -21,8 +21,8 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # Create a new FastAPI app - no root_path for Vercel
+# Create the FastAPI app properly
 app = FastAPI()
-
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
