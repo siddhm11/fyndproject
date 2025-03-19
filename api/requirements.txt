@@ -8,4 +8,4 @@ passlib
 bcrypt==4.0.1
 python-jose[cryptography]
 email-validator
-mangum
+mangum>=0.17.0
