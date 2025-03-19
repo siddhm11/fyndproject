@@ -14,7 +14,7 @@
       "src": "api/index.py",
       "use": "@vercel/python",
       "config": {
-        "maxDuration": 10,
+        "maxDuration": 30,
         "memory": 1024
       }
     },
@@ -24,9 +24,7 @@
     }
   ],
   "env": {
-     "MONGODB_URL": "mongodb+srv://admin:test1234%21@clusterfynd.bng6e.mongodb.net/?retryWrites=true&w=majority&appName=clusterfynd",
+     "MONGODB_URL": "mongodb+srv://admin:test1234%21@clusterfynd.bng6e.mongodb.net/movie_db?retryWrites=true&w=majority&appName=clusterfynd",
      "SECRET_KEY": "5ba6d2ba997729a5a8ed909ffd2d483d395401ceacb43dff82272c73cb010958"
   }
 }
-     
-
