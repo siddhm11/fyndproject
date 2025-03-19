@@ -34,7 +34,8 @@ app.add_middleware(
 )
 
 # MongoDB setup - ensure consistent connection string format
-MONGODB_URL = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
+MONGODB_URL = os.getenv("MONGODB_URL", "mongodb+srv://admin:test1234%21@clusterfynd.bng6e.mongodb.net/?retryWrites=true&w=majority&appName=clusterfynd",
+     ")
 # Print the connection string for debugging (remove in production)
 print(f"MongoDB URL: {MONGODB_URL}")
 
