@@ -237,349 +237,349 @@
     <script>
         // This code should replace the existing JavaScript in your frontend/index.html
 
-// Configuration
-    const API_URL = window.location.hostname === 'localhost' 
-      ? 'http://localhost:8000' 
-      : '/api';  // This will correctly route to your API on Vercel
-    let token = localStorage.getItem('token');
-    let isAdmin = localStorage.getItem('isAdmin') === 'true';
-    
-    // DOM Elements
-    const loginSection = document.getElementById('login-section');
-    const movieSection = document.getElementById('movie-section');
-    const loginForm = document.getElementById('login-form');
-    const moviesContainer = document.getElementById('movies-container');
-    const welcomeMessage = document.getElementById('welcome-message');
-    const logoutBtn = document.getElementById('logout-btn');
-    const searchBar = document.getElementById('search-bar');
-    const addMovieBtn = document.getElementById('add-movie-btn');
-    const addModal = document.getElementById('add-modal');
-    const addMovieForm = document.getElementById('add-movie-form');
-    const editModal = document.getElementById('edit-modal');
-    const editMovieForm = document.getElementById('edit-movie-form');
-    
-    // Check if user is logged in
-    function checkAuth() {
-        console.log("Checking auth - token:", token ? "exists" : "none", "isAdmin:", isAdmin);
-        if (token) {
-            loginSection.classList.add('hidden');
-            movieSection.classList.remove('hidden');
-            
-            // Check if user is admin
-            if (isAdmin) {
-                addMovieBtn.classList.remove('hidden');
-                welcomeMessage.textContent = `Welcome, ${localStorage.getItem('username')}!`;
-                welcomeMessage.innerHTML += '<span class="admin-badge">Admin</span>';
-                console.log("Admin features enabled");
-            } else {
-                addMovieBtn.classList.add('hidden');
-                welcomeMessage.textContent = `Welcome, ${localStorage.getItem('username')}!`;
-                console.log("Regular user mode");
-            }
-            
-            fetchMovies();
-        } else {
-            loginSection.classList.remove('hidden');
-            movieSection.classList.add('hidden');
-        }
-    }
-    
-    // Login form submission with improved error handling
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+    // Configuration
+        const API_URL = window.location.hostname === 'localhost' 
+          ? 'http://localhost:8000' 
+          : '/api';  // This will correctly route to your API on Vercel
+        let token = localStorage.getItem('token');
+        let isAdmin = localStorage.getItem('isAdmin') === 'true';
         
-        try {
-            console.log(`Attempting login to ${API_URL}/token`);
-            
-            const response = await fetch(`${API_URL}/token`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
-            });
-            
-            console.log("Response status:", response.status);
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error("Login error response:", errorText);
-                throw new Error(`Login failed: ${response.status} ${response.statusText}`);
+        // DOM Elements
+        const loginSection = document.getElementById('login-section');
+        const movieSection = document.getElementById('movie-section');
+        const loginForm = document.getElementById('login-form');
+        const moviesContainer = document.getElementById('movies-container');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const logoutBtn = document.getElementById('logout-btn');
+        const searchBar = document.getElementById('search-bar');
+        const addMovieBtn = document.getElementById('add-movie-btn');
+        const addModal = document.getElementById('add-modal');
+        const addMovieForm = document.getElementById('add-movie-form');
+        const editModal = document.getElementById('edit-modal');
+        const editMovieForm = document.getElementById('edit-movie-form');
+        
+        // Check if user is logged in
+        function checkAuth() {
+            console.log("Checking auth - token:", token ? "exists" : "none", "isAdmin:", isAdmin);
+            if (token) {
+                loginSection.classList.add('hidden');
+                movieSection.classList.remove('hidden');
+                
+                // Check if user is admin
+                if (isAdmin) {
+                    addMovieBtn.classList.remove('hidden');
+                    welcomeMessage.textContent = `Welcome, ${localStorage.getItem('username')}!`;
+                    welcomeMessage.innerHTML += '<span class="admin-badge">Admin</span>';
+                    console.log("Admin features enabled");
+                } else {
+                    addMovieBtn.classList.add('hidden');
+                    welcomeMessage.textContent = `Welcome, ${localStorage.getItem('username')}!`;
+                    console.log("Regular user mode");
+                }
+                
+                fetchMovies();
+            } else {
+                loginSection.classList.remove('hidden');
+                movieSection.classList.add('hidden');
             }
+        }
+        
+        // Login form submission with improved error handling
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
             
-            const data = await response.json();
-            console.log("Login successful, received token");
-            
-            token = data.access_token;
-            localStorage.setItem('token', token);
-            localStorage.setItem('username', username);
-            
-            // Fetch user info to check if admin
             try {
-                console.log(`Fetching user info from ${API_URL}/users/me`);
-                const userResponse = await fetch(`${API_URL}/users/me`, {
+                console.log(`Attempting login to ${API_URL}/token`);
+                
+                const response = await fetch(`${API_URL}/token`, {
+                    method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
                 });
                 
-                if (!userResponse.ok) {
-                    const userErrorText = await userResponse.text();
-                    console.error("User info error:", userErrorText);
-                    throw new Error(`Failed to get user info: ${userResponse.status}`);
+                console.log("Response status:", response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Login error response:", errorText);
+                    throw new Error(`Login failed: ${response.status} ${response.statusText}`);
                 }
                 
-                const userData = await userResponse.json();
-                console.log("User data:", userData);
-                isAdmin = userData.role === 'admin';
-                localStorage.setItem('isAdmin', isAdmin.toString());
-                console.log("User is admin:", isAdmin);
-            } catch (error) {
-                console.error('Error fetching user info:', error);
-                // If we can't determine admin status, assume regular user
-                isAdmin = false;
-                localStorage.setItem('isAdmin', 'false');
-            }
-            
-            checkAuth();
-        } catch (error) {
-            console.error('Login error:', error);
-            alert(`Error: ${error.message || 'Unknown error connecting to the server'}`);
-        }
-    });
-    
-    // Logout functionality
-    logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
-        localStorage.removeItem('isAdmin');
-        token = null;
-        isAdmin = false;
-        checkAuth();
-    });
-    
-    // Add Movie Button Click
-    addMovieBtn.addEventListener('click', () => {
-        addModal.classList.remove('hidden');
-    });
-    
-    // Close modals when clicking cancel
-    document.querySelectorAll('.cancel-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            addModal.classList.add('hidden');
-            editModal.classList.add('hidden');
-        });
-    });
-    
-    // Fetch movies from API with improved error handling
-    async function fetchMovies(searchQuery = '') {
-        try {
-            let url = `${API_URL}/movies/`;
-            if (searchQuery) {
-                url += `?search=${encodeURIComponent(searchQuery)}`;
-            }
-            
-            console.log(`Fetching movies from ${url}`);
-            
-            const response = await fetch(url, {
-                headers: token ? {
-                    'Authorization': `Bearer ${token}`
-                } : {}
-            });
-            
-            if (!response.ok) {
-                if (response.status === 401) {
-                    // Token expired or invalid
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('username');
-                    localStorage.removeItem('isAdmin');
-                    token = null;
+                const data = await response.json();
+                console.log("Login successful, received token");
+                
+                token = data.access_token;
+                localStorage.setItem('token', token);
+                localStorage.setItem('username', username);
+                
+                // Fetch user info to check if admin
+                try {
+                    console.log(`Fetching user info from ${API_URL}/users/me`);
+                    const userResponse = await fetch(`${API_URL}/users/me`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (!userResponse.ok) {
+                        const userErrorText = await userResponse.text();
+                        console.error("User info error:", userErrorText);
+                        throw new Error(`Failed to get user info: ${userResponse.status}`);
+                    }
+                    
+                    const userData = await userResponse.json();
+                    console.log("User data:", userData);
+                    isAdmin = userData.role === 'admin';
+                    localStorage.setItem('isAdmin', isAdmin.toString());
+                    console.log("User is admin:", isAdmin);
+                } catch (error) {
+                    console.error('Error fetching user info:', error);
+                    // If we can't determine admin status, assume regular user
                     isAdmin = false;
-                    checkAuth();
-                    alert('Session expired. Please login again.');
-                    return;
+                    localStorage.setItem('isAdmin', 'false');
                 }
                 
-                const errorText = await response.text();
-                console.error("Movies fetch error:", errorText);
-                throw new Error(`Error fetching movies: ${response.status}`);
+                checkAuth();
+            } catch (error) {
+                console.error('Login error:', error);
+                alert(`Error: ${error.message || 'Unknown error connecting to the server'}`);
             }
-            
-            const movies = await response.json();
-            console.log(`Received ${movies.length} movies`);
-            displayMovies(movies);
-        } catch (error) {
-            console.error('Error fetching movies:', error);
-            moviesContainer.innerHTML = `<p>Error loading movies: ${error.message}</p>`;
-        }
-    }
-    
-    // Display movies in the UI
-    function displayMovies(movies) {
-        moviesContainer.innerHTML = '';
-        
-        if (movies.length === 0) {
-            moviesContainer.innerHTML = '<p>No movies found.</p>';
-            return;
-        }
-        
-        console.log("Display movies - isAdmin:", isAdmin);
-        
-        movies.forEach(movie => {
-            const movieCard = document.createElement('div');
-            movieCard.className = 'movie-card';
-            
-            // Ensure cast is an array before joining
-            let castText = '';
-            if (movie.cast && Array.isArray(movie.cast) && movie.cast.length > 0) {
-                castText = `<div class="movie-info">Cast: ${movie.cast.join(', ')}</div>`;
-            }
-            
-            let descriptionText = '';
-            if (movie.description) {
-                descriptionText = `<div class="movie-info">${movie.description}</div>`;
-            }
-            
-            movieCard.innerHTML = `
-                <div class="movie-title">${movie.title} (${movie.year})</div>
-                <div class="movie-info">Director: ${movie.director}</div>
-                <div class="movie-info">Genre: ${movie.genre}</div>
-                <div class="movie-info">Rating: ${movie.rating} / 10</div>
-                ${castText}
-                ${descriptionText}
-            `;
-            
-            // Add edit button for admins
-            if (isAdmin) {
-                const editBtn = document.createElement('button');
-                editBtn.className = 'edit-btn';
-                editBtn.textContent = 'Edit';
-                editBtn.addEventListener('click', () => openEditModal(movie));
-                movieCard.appendChild(editBtn);
-            }
-            
-            moviesContainer.appendChild(movieCard);
         });
-    }
-    
-    // Open Edit Modal
-    function openEditModal(movie) {
-        document.getElementById('edit-id').value = movie.id;
-        document.getElementById('edit-title').value = movie.title;
-        document.getElementById('edit-year').value = movie.year;
-        document.getElementById('edit-genre').value = movie.genre;
-        document.getElementById('edit-director').value = movie.director;
         
-        // Handle cast properly - ensure it's an array before joining
-        const castValue = Array.isArray(movie.cast) ? movie.cast.join(', ') : '';
-        document.getElementById('edit-cast').value = castValue;
+        // Logout functionality
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            localStorage.removeItem('isAdmin');
+            token = null;
+            isAdmin = false;
+            checkAuth();
+        });
         
-        document.getElementById('edit-rating').value = movie.rating;
-        document.getElementById('edit-description').value = movie.description || '';
+        // Add Movie Button Click
+        addMovieBtn.addEventListener('click', () => {
+            addModal.classList.remove('hidden');
+        });
         
-        editModal.classList.remove('hidden');
-    }
-    
-    // Add Movie Form Submission
-    addMovieForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const movieData = {
-            title: document.getElementById('title').value,
-            year: parseInt(document.getElementById('year').value),
-            genre: document.getElementById('genre').value,
-            director: document.getElementById('director').value,
-            cast: document.getElementById('cast').value.split(',').map(name => name.trim()).filter(name => name),
-            rating: parseFloat(document.getElementById('rating').value),
-            description: document.getElementById('description').value
-        };
-        
-        try {
-            const response = await fetch(`${API_URL}/movies/`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(movieData)
+        // Close modals when clicking cancel
+        document.querySelectorAll('.cancel-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                addModal.classList.add('hidden');
+                editModal.classList.add('hidden');
             });
+        });
+        
+        // Fetch movies from API with improved error handling
+        async function fetchMovies(searchQuery = '') {
+            try {
+                let url = `${API_URL}/movies/`;
+                if (searchQuery) {
+                    url += `?search=${encodeURIComponent(searchQuery)}`;
+                }
+                
+                console.log(`Fetching movies from ${url}`);
+                
+                const response = await fetch(url, {
+                    headers: token ? {
+                        'Authorization': `Bearer ${token}`
+                    } : {}
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        // Token expired or invalid
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('username');
+                        localStorage.removeItem('isAdmin');
+                        token = null;
+                        isAdmin = false;
+                        checkAuth();
+                        alert('Session expired. Please login again.');
+                        return;
+                    }
+                    
+                    const errorText = await response.text();
+                    console.error("Movies fetch error:", errorText);
+                    throw new Error(`Error fetching movies: ${response.status}`);
+                }
+                
+                const movies = await response.json();
+                console.log(`Received ${movies.length} movies`);
+                displayMovies(movies);
+            } catch (error) {
+                console.error('Error fetching movies:', error);
+                moviesContainer.innerHTML = `<p>Error loading movies: ${error.message}</p>`;
+            }
+        }
+        
+        // Display movies in the UI
+        function displayMovies(movies) {
+            moviesContainer.innerHTML = '';
             
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error("Add movie error:", errorText);
-                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            if (movies.length === 0) {
+                moviesContainer.innerHTML = '<p>No movies found.</p>';
+                return;
             }
             
-            alert('Movie added successfully!');
-            addMovieForm.reset();
-            addModal.classList.add('hidden');
-            fetchMovies();
-        } catch (error) {
-            console.error('Error adding movie:', error);
-            alert(`Error adding movie: ${error.message}`);
-        }
-    });
-    
-    // Edit Movie Form Submission
-    editMovieForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const movieId = document.getElementById('edit-id').value;
-        const movieData = {
-            title: document.getElementById('edit-title').value,
-            year: parseInt(document.getElementById('edit-year').value),
-            genre: document.getElementById('edit-genre').value,
-            director: document.getElementById('edit-director').value,
-            cast: document.getElementById('edit-cast').value.split(',').map(name => name.trim()).filter(name => name),
-            rating: parseFloat(document.getElementById('edit-rating').value),
-            description: document.getElementById('edit-description').value
-        };
-        
-        try {
-            const response = await fetch(`${API_URL}/movies/${movieId}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(movieData)
+            console.log("Display movies - isAdmin:", isAdmin);
+            
+            movies.forEach(movie => {
+                const movieCard = document.createElement('div');
+                movieCard.className = 'movie-card';
+                
+                // Ensure cast is an array before joining
+                let castText = '';
+                if (movie.cast && Array.isArray(movie.cast) && movie.cast.length > 0) {
+                    castText = `<div class="movie-info">Cast: ${movie.cast.join(', ')}</div>`;
+                }
+                
+                let descriptionText = '';
+                if (movie.description) {
+                    descriptionText = `<div class="movie-info">${movie.description}</div>`;
+                }
+                
+                movieCard.innerHTML = `
+                    <div class="movie-title">${movie.title} (${movie.year})</div>
+                    <div class="movie-info">Director: ${movie.director}</div>
+                    <div class="movie-info">Genre: ${movie.genre}</div>
+                    <div class="movie-info">Rating: ${movie.rating} / 10</div>
+                    ${castText}
+                    ${descriptionText}
+                `;
+                
+                // Add edit button for admins
+                if (isAdmin) {
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'edit-btn';
+                    editBtn.textContent = 'Edit';
+                    editBtn.addEventListener('click', () => openEditModal(movie));
+                    movieCard.appendChild(editBtn);
+                }
+                
+                moviesContainer.appendChild(movieCard);
             });
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error("Edit movie error:", errorText);
-                throw new Error(`Error: ${response.status} ${response.statusText}`);
-            }
-            
-            alert('Movie updated successfully!');
-            editModal.classList.add('hidden');
-            fetchMovies();
-        } catch (error) {
-            console.error('Error updating movie:', error);
-            alert(`Error updating movie: ${error.message}`);
         }
-    });
-    
-    // Search functionality
-    searchBar.addEventListener('input', debounce((e) => {
-        fetchMovies(e.target.value);
-    }, 500));
-    
-    // Debounce function to limit API calls
-    function debounce(func, wait) {
-        let timeout;
-        return function(...args) {
-            const context = this;
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(context, args), wait);
-        };
-    }
-    
-    // Initial check
-    console.log("Initial state - token:", token ? "exists" : "none", "isAdmin:", isAdmin);
-    checkAuth();
+        
+        // Open Edit Modal
+        function openEditModal(movie) {
+            document.getElementById('edit-id').value = movie.id;
+            document.getElementById('edit-title').value = movie.title;
+            document.getElementById('edit-year').value = movie.year;
+            document.getElementById('edit-genre').value = movie.genre;
+            document.getElementById('edit-director').value = movie.director;
+            
+            // Handle cast properly - ensure it's an array before joining
+            const castValue = Array.isArray(movie.cast) ? movie.cast.join(', ') : '';
+            document.getElementById('edit-cast').value = castValue;
+            
+            document.getElementById('edit-rating').value = movie.rating;
+            document.getElementById('edit-description').value = movie.description || '';
+            
+            editModal.classList.remove('hidden');
+        }
+        
+        // Add Movie Form Submission
+        addMovieForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const movieData = {
+                title: document.getElementById('title').value,
+                year: parseInt(document.getElementById('year').value),
+                genre: document.getElementById('genre').value,
+                director: document.getElementById('director').value,
+                cast: document.getElementById('cast').value.split(',').map(name => name.trim()).filter(name => name),
+                rating: parseFloat(document.getElementById('rating').value),
+                description: document.getElementById('description').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/movies/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(movieData)
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Add movie error:", errorText);
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                
+                alert('Movie added successfully!');
+                addMovieForm.reset();
+                addModal.classList.add('hidden');
+                fetchMovies();
+            } catch (error) {
+                console.error('Error adding movie:', error);
+                alert(`Error adding movie: ${error.message}`);
+            }
+        });
+        
+        // Edit Movie Form Submission
+        editMovieForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const movieId = document.getElementById('edit-id').value;
+            const movieData = {
+                title: document.getElementById('edit-title').value,
+                year: parseInt(document.getElementById('edit-year').value),
+                genre: document.getElementById('edit-genre').value,
+                director: document.getElementById('edit-director').value,
+                cast: document.getElementById('edit-cast').value.split(',').map(name => name.trim()).filter(name => name),
+                rating: parseFloat(document.getElementById('edit-rating').value),
+                description: document.getElementById('edit-description').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/movies/${movieId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(movieData)
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Edit movie error:", errorText);
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                
+                alert('Movie updated successfully!');
+                editModal.classList.add('hidden');
+                fetchMovies();
+            } catch (error) {
+                console.error('Error updating movie:', error);
+                alert(`Error updating movie: ${error.message}`);
+            }
+        });
+        
+        // Search functionality
+        searchBar.addEventListener('input', debounce((e) => {
+            fetchMovies(e.target.value);
+        }, 500));
+        
+        // Debounce function to limit API calls
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
+        
+        // Initial check
+        console.log("Initial state - token:", token ? "exists" : "none", "isAdmin:", isAdmin);
+        checkAuth();
     </script>
 </body>
 </html>
