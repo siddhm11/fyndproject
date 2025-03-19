@@ -2,7 +2,6 @@
 from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 import os
-from mangum import Mangum
 from jose import jwt, JWTError
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -240,4 +239,3 @@ async def add_error_handling(request: Request, call_next):
         return HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 # Create the serverless handler
-handler = Mangum(app)
