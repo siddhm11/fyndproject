@@ -13,12 +13,11 @@ from jose import jwt, JWTError
 from datetime import datetime, timedelta, timezone
 from fastapi.middleware.cors import CORSMiddleware
 
-load_dotenv()  # Load .env file
 
 # Security setup
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-SECRET_KEY = os.getenv("SECRET_KEY", "5ba6d2ba997729a5a8ed909ffd2d483d395401ceacb43dff82272c73cb010958")
+SECRET_KEY = "5ba6d2ba997729a5a8ed909ffd2d483d395401ceacb43dff82272c73cb010958"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -37,7 +36,7 @@ app.add_middleware(
 )
 
 # MongoDB setup - ensure consistent connection string format
-MONGODB_URI = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
+MONGODB_URI = "mongodb+srv://admin:test1234%21@clusterfynd.bng6e.mongodb.net/?retryWrites=true&w=majority&appName=clusterfynd"
 # Ensure we have the database name in the connection string
 DB_NAME = "movie_db"
 client = AsyncIOMotorClient(MONGODB_URI)
