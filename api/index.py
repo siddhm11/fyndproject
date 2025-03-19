@@ -39,17 +39,22 @@ print(f"MongoDB URL: {MONGODB_URL}")
 
 # Ensure we have the database name in the connection string
 DB_NAME = "movie_db"
-try:
-    client = AsyncIOMotorClient(MONGODB_URL)
-    db = client[DB_NAME]
-    print("MongoDB connection successful")
-except Exception as e:
-    print(f"MongoDB connection error: {str(e)}")
-    print(traceback.format_exc())
-    # Create a dummy DB object to prevent the app from crashing
-    client = None
-    db = None
+# Modify the database connection in api/index.py
+# Replace your current MongoDB connection code with:
 
+client = None
+db = None
+
+@app.on_event("startup")
+async def startup_db_client():
+    global client, db
+    try:
+        client = AsyncIOMotorClient(MONGODB_URL)
+        db = client[DB_NAME]
+        print("MongoDB connection successful")
+    except Exception as e:
+        print(f"MongoDB connection error: {str(e)}")
+        print(traceback.format_exc())
 # Models
 class User(BaseModel):
     username: str
