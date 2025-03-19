@@ -13,6 +13,8 @@ from jose import jwt, JWTError
 from datetime import datetime, timedelta, timezone
 from fastapi.middleware.cors import CORSMiddleware
 
+import os
+port = int(os.getenv("PORT", 8000))  # Default to 8000 if PORT is not set
 
 # Security setup
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
