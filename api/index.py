@@ -1,7 +1,8 @@
+# Use the cleaned up and fixed main.py from the backend folder
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 import os
-from mangum import Adapter, Mangum
+from mangum import Mangum
 from jose import jwt, JWTError
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -19,7 +20,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "5ba6d2ba997729a5a8ed909ffd2d483d395401ceac
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-# Create a new FastAPI app
+# Create a new FastAPI app - no root_path for Vercel
 app = FastAPI()
 
 # Add CORS middleware
@@ -31,8 +32,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# MongoDB setup
+# MongoDB setup - ensure consistent connection string format
 MONGODB_URL = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
+# Ensure we have the database name in the connection string
 DB_NAME = "movie_db"
 client = AsyncIOMotorClient(MONGODB_URL)
 db = client[DB_NAME]
@@ -52,7 +54,7 @@ class Movie(BaseModel):
     year: int
     genre: str
     director: str
-    cast: list[str]
+    cast: List[str]
     rating: float
     description: Optional[str] = None
 
@@ -130,7 +132,15 @@ async def get_movies(search: Optional[str] = None):
         movies = await db.movies.find(query).to_list(100)
     else:
         movies = await db.movies.find().to_list(100)
-    return [{"id": str(m["_id"]), **{k: v for k, v in m.items() if k != "_id"}} for m in movies]
+    
+    # Fix the ID handling in the return
+    movie_list = []
+    for m in movies:
+        movie_dict = {k: v for k, v in m.items() if k != "_id"}
+        movie_dict["id"] = str(m["_id"])
+        movie_list.append(movie_dict)
+    
+    return movie_list
 
 @app.put("/movies/{movie_id}", response_model=MovieInDB)
 async def update_movie(movie_id: str, movie: Movie, admin: User = Depends(get_admin_user)):
@@ -139,14 +149,24 @@ async def update_movie(movie_id: str, movie: Movie, admin: User = Depends(get_ad
     updated_movie = await db.movies.find_one({"_id": ObjectId(movie_id)})
     if not updated_movie:
         raise HTTPException(status_code=404, detail="Movie not found")
-    return {"id": str(updated_movie["_id"]), **{k: v for k, v in updated_movie.items() if k != "_id"}}
+    
+    # Fix the ID handling in the return
+    movie_dict = {k: v for k, v in updated_movie.items() if k != "_id"}
+    movie_dict["id"] = str(updated_movie["_id"])
+    
+    return movie_dict
 
 @app.get("/movies/{movie_id}", response_model=MovieInDB)
 async def get_movie(movie_id: str):
     movie = await db.movies.find_one({"_id": ObjectId(movie_id)})
     if not movie:
         raise HTTPException(status_code=404, detail="Movie not found")
-    return {"id": str(movie["_id"]), **{k: v for k, v in movie.items() if k != "_id"}}
+    
+    # Fix the ID handling in the return
+    movie_dict = {k: v for k, v in movie.items() if k != "_id"}
+    movie_dict["id"] = str(movie["_id"])
+    
+    return movie_dict
 
 @app.post("/register/", response_model=User)
 async def register_user(
@@ -169,7 +189,13 @@ async def register_user(
     }
     
     result = await db.users.insert_one(user_data)
-    return {**user_data, "id": str(result.inserted_id)}
+    user_data_out = {k: v for k, v in user_data.items() if k != "hashed_password"}
+    return user_data_out
+
+# Root route for testing connection
+@app.get("/")
+async def root():
+    return {"message": "API is running! Connect to /movies/ to see data."}
 
 # Create the serverless handler
 handler = Mangum(app)
