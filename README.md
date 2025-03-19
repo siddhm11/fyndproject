@@ -1,4 +1,4 @@
-# Movie Database API Documentation
+# Movie Database API 
 
 This documentation provides details on the movie database API, including endpoints, authentication, and usage examples.
 
