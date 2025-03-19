@@ -238,7 +238,8 @@ async def add_error_handling(request: Request, call_next):
         print(traceback.format_exc())
         return HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-# Create the serverless handler
-# Create the serverless handler
+# Update your api/index.py file with this handler setup
 from mangum import Mangum
-handler = Mangum(app)
+
+# Make sure this is at the very bottom of the file, after defining your FastAPI app
+handler = Mangum(app, lifespan="off")  # Try with lifespan turned off
