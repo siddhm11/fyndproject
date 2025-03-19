@@ -1,8 +1,8 @@
-fastapi
 motor
 pymongo
 python-multipart
-uvicorn
+fastapi>=0.68.0
+uvicorn>=0.15.0
 python-dotenv
 passlib
 bcrypt==4.0.1
