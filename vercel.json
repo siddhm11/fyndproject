@@ -24,7 +24,7 @@
     }
   ],
   "env": {
-     "MONGODB_URL": "mongodb+srv://admin:test1234!@clusterfynd.bng6e.mongodb.net/movie_db?retryWrites=true&w=majority",
+     "MONGODB_URL": "mongodb+srv://admin:test1234%21@clusterfynd.bng6e.mongodb.net/movie_db?retryWrites=true&w=majority",
      "SECRET_KEY": "5ba6d2ba997729a5a8ed909ffd2d483d395401ceacb43dff82272c73cb010958"
   }
 }
