@@ -26,8 +26,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 # Vercel handles the routing with vercel.json
 app = FastAPI()
 from mangum import Mangum
-handler = Mangum(app)
-
+handler = Mangum(app ,lifespan="off")
 # Add CORS middleware BEFORE routes
 app.add_middleware(
     CORSMiddleware,
