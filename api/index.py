@@ -36,7 +36,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # MongoDB setup
-MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
+MONGODB_URI = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
 DB_NAME = "movie_db"
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client[DB_NAME]
