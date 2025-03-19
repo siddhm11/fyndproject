@@ -2,7 +2,7 @@
   "builds": [
     {
       "src": "api/index.py",
-      "use": "@vercel/async-python",  // Use ASGI-compatible builder
+      "use": "@vercel/async-python",  // Changed from @vercel/python
       "config": {
         "maxDuration": 30,
         "memory": 1024
@@ -12,9 +12,5 @@
       "src": "frontend/**",
       "use": "@vercel/static"
     }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index.py" },
-    { "src": "/(.*)", "dest": "/frontend/$1" }
   ]
 }
