@@ -16,7 +16,7 @@
     }
   },
   "env": {
-    "MONGODB_URL": "@MONGODB_URL",
-    "SECRET_KEY": "@SECRET_KEY"
+  "MONGODB_URL": "@mongodb_url",
+  "SECRET_KEY": "@secret_key"
   }
 }
