@@ -293,6 +293,7 @@ async def root():
     return {
         "message": "API is running! Connect to /movies/ to see data.",
         "search_info": "Search: GET /movies/?search=your_search_term",
+        "documentation":"https://github.com/siddhm11/fyndproject/blob/main/README.md#movie-database-api",
         "endpoints": {
             "all_movies": "/movies/",
             "search_movies": "/movies/?search=your_search_term",
