@@ -1,8 +1,3 @@
-# main.py - Movie Database API
-# ----------------------------
-# A FastAPI application that provides movie information and user authentication
-# This API connects to MongoDB and exposes endpoints for movie search and management
-
 import logging
 from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
