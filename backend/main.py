@@ -37,7 +37,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 logger.info("Security components initialized")
 
 # FastAPI app setup
-# -----------------
 app = FastAPI(
     title="Movie Database API",
     description="An API for searching and managing movie information with user authentication",
@@ -46,18 +45,16 @@ app = FastAPI(
 from mangum import Mangum
 handler = Mangum(app, lifespan="off")  # AWS Lambda handler
 
-# CORS middleware setup to allow cross-origin requests (important for frontend integration)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins (should be restricted in production)
+    allow_origins=["*"],  
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"], 
+    allow_headers=["*"], 
 )
 logger.info("CORS middleware configured")
 
 # MongoDB connection setup
-# -----------------------
 MONGODB_URI = "mongodb+srv://admin:test1234%21@clusterfynd.bng6e.mongodb.net/?retryWrites=true&w=majority&appName=clusterfynd"
 DB_NAME = "movie_db"
 
