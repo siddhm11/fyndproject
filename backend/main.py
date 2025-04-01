@@ -92,6 +92,7 @@ class MovieInDB(Movie):
 
 # Database Initialization
 # ----------------------
+# this is so i can do a multi field search and the indexes help me search with a log n time 
 @app.on_event("startup")
 async def create_indexes():
     """Create text indexes on startup to enable efficient text search"""
